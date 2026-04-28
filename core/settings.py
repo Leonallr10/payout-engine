@@ -58,8 +58,8 @@ ASGI_APPLICATION = "core.asgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": config("POSTGRES_DB", default="payout_engine"),
+        "ENGINE": config("DB_ENGINE", default="django.db.backends.postgresql"),
+        "NAME": config("POSTGRES_DB", default=str(BASE_DIR / "db.sqlite3")),
         "USER": config("POSTGRES_USER", default="postgres"),
         "PASSWORD": config("POSTGRES_PASSWORD", default="postgres"),
         "HOST": config("POSTGRES_HOST", default="localhost"),
