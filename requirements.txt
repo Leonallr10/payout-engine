@@ -135,7 +135,6 @@ hyperframe==5.2.0
 hyperlink==21.0.0
 idna==2.10
 # Editable install with no version control (image-to-glb==0.1.0)
--e f:\leonal-projects\image-to-glb
 imageio==2.37.0
 imageio-ffmpeg==0.6.0
 importlib_metadata==8.6.1
