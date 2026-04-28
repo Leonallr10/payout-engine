@@ -14,6 +14,7 @@ from .serializers import (
     LedgerEntrySerializer,
     PayoutSerializer,
 )
+from .tasks import process_payout
 
 
 def get_merchant_balance(merchant: Merchant) -> int:
@@ -134,6 +135,8 @@ class PayoutListCreateView(APIView):
                     key=validated_data["idempotency_key"],
                     response_body=response_payload,
                 )
+
+            transaction.on_commit(lambda: process_payout.delay(payout.id))
 
         return Response(response_payload, status=status.HTTP_201_CREATED)
 

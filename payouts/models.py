@@ -48,6 +48,7 @@ class Payout(models.Model):
     bank_account_id = models.CharField(max_length=255)
     idempotency_key = models.CharField(max_length=255)
     attempts = models.PositiveIntegerField(default=0)
+    processing_started_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         constraints = [

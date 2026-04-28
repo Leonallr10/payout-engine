@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.utils import timezone
 
 from .models import LedgerEntry, Payout
 
@@ -33,7 +34,12 @@ def transition_payout(payout_id: int, to_status: str) -> Payout:
 
         if to_status == Payout.Status.PROCESSING:
             payout.attempts += 1
-            update_fields.append("attempts")
+            payout.processing_started_at = timezone.now()
+            update_fields.extend(["attempts", "processing_started_at"])
+
+        if to_status in {Payout.Status.COMPLETED, Payout.Status.FAILED}:
+            payout.processing_started_at = None
+            update_fields.append("processing_started_at")
 
         payout.save(update_fields=update_fields)
 
@@ -48,4 +54,18 @@ def transition_payout(payout_id: int, to_status: str) -> Payout:
                 },
             )
 
+        return payout
+
+
+def mark_processing_retry(payout_id: int) -> Payout:
+    with transaction.atomic():
+        payout = Payout.objects.select_for_update().get(pk=payout_id)
+        if payout.status != Payout.Status.PROCESSING:
+            raise InvalidPayoutTransition(
+                f"Cannot retry payout {payout.id} while in {payout.status}."
+            )
+
+        payout.attempts += 1
+        payout.processing_started_at = timezone.now()
+        payout.save(update_fields=["attempts", "processing_started_at"])
         return payout
