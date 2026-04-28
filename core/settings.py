@@ -120,6 +120,8 @@ REST_FRAMEWORK = {
 REDIS_URL = config("REDIS_URL", default="redis://127.0.0.1:6379/0")
 
 CELERY_BROKER_URL = config("CELERY_BROKER_URL", default=REDIS_URL)
+if CELERY_BROKER_URL.startswith("rediss://"):
+    CELERY_REDIS_BACKEND_USE_SSL = {"ssl_cert_reqs": "none"}
 CELERY_RESULT_BACKEND = config("CELERY_RESULT_BACKEND", default="django-db")
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
