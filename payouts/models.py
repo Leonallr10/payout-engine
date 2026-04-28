@@ -31,7 +31,7 @@ class Payout(models.Model):
     class Status(models.TextChoices):
         PENDING = "PENDING", "Pending"
         PROCESSING = "PROCESSING", "Processing"
-        SUCCESS = "SUCCESS", "Success"
+        COMPLETED = "COMPLETED", "Completed"
         FAILED = "FAILED", "Failed"
 
     merchant = models.ForeignKey(
